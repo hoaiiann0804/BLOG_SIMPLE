@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: node-api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: Blog_Simple
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules # tránh lỗi ghi đè node_modules
+
+  db:
+    image: postgres:17
+    container_name: blog-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: Blog_Simple
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
